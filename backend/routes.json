@@ -1,0 +1,6 @@
+{
+  "/register": "/users",
+  "/login": "/users",
+  "/reserve": "/reservations",
+  "/reservations": "/reservations"
+}
