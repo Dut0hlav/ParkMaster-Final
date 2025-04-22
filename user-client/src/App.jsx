@@ -109,7 +109,7 @@ export default function App() {
           return (
             <button
               key={spot}
-              className={\"border px-4 py-2 rounded \${reserved ? "bg-red-300 cursor-not-allowed" : selectedSpot === spot ? "bg-blue-600 text-white" : "bg-white"}\"}
+              className={"border px-4 py-2 rounded \${reserved ? "bg-red-300 cursor-not-allowed" : selectedSpot === spot ? "bg-blue-600 text-white" : "bg-white"}"}
               disabled={reserved}
               onClick={() => setSelectedSpot(spot)}
             >
