@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -27,7 +28,7 @@ export default function App() {
         if (res.data.success) setUser(res.data.username);
         else alert(res.data.message);
       } catch (err) {
-        alert(err.response.data.message || "Auth failed");
+        alert(err.response?.data?.message || "Auth failed");
       }
     }
   };
@@ -48,16 +49,29 @@ export default function App() {
         user,
       });
       if (res.data.success) {
-        setReservations([...reservations, {
-          spot: selectedSpot,
-          date: date.toDateString(),
-          lot: "MainLot",
-          user,
-        }]);
+        setReservations([
+          ...reservations,
+          {
+            id: res.data.id,
+            spot: selectedSpot,
+            date: date.toDateString(),
+            lot: "MainLot",
+            user,
+          },
+        ]);
         alert("Reservation successful!");
       }
     } catch (err) {
       alert(err.response?.data?.message || "Reservation failed");
+    }
+  };
+
+  const cancelReservation = async (id) => {
+    try {
+      await axios.delete(`${API}/reservations/${id}`);
+      setReservations(reservations.filter((r) => r.id !== id));
+    } catch (err) {
+      alert("Failed to cancel reservation");
     }
   };
 
@@ -95,7 +109,7 @@ export default function App() {
           return (
             <button
               key={spot}
-              className={`border px-4 py-2 rounded ${reserved ? 'bg-red-300 cursor-not-allowed' : selectedSpot === spot ? 'bg-blue-600 text-white' : 'bg-white'}`}
+              className={\"border px-4 py-2 rounded \${reserved ? "bg-red-300 cursor-not-allowed" : selectedSpot === spot ? "bg-blue-600 text-white" : "bg-white"}\"}
               disabled={reserved}
               onClick={() => setSelectedSpot(spot)}
             >
@@ -108,14 +122,26 @@ export default function App() {
       <button onClick={reserveSpot} className="w-full bg-green-600 text-white py-2 rounded">Reserve</button>
 
       <div className="mt-6">
-        <h2 className="font-bold mb-2">All Reservations (client view):</h2>
-        {reservations.map((r, i) => (
-          <div key={i} className="border px-3 py-2 mb-1 rounded text-sm bg-gray-100">
-            <p><strong>User:</strong> {r.user}</p>
-            <p><strong>Spot:</strong> {r.spot}</p>
-            <p><strong>Date:</strong> {r.date}</p>
-          </div>
-        ))}
+        <h2 className="font-bold mb-2">My Reservations:</h2>
+        {reservations
+          .filter((r) => r.user === user)
+          .map((r) => (
+            <div
+              key={r.id}
+              className="border px-3 py-2 mb-1 rounded text-sm bg-gray-100 flex justify-between items-center"
+            >
+              <div>
+                <p><strong>Spot:</strong> {r.spot}</p>
+                <p><strong>Date:</strong> {r.date}</p>
+              </div>
+              <button
+                onClick={() => cancelReservation(r.id)}
+                className="text-red-600 text-xs underline"
+              >
+                Cancel
+              </button>
+            </div>
+          ))}
       </div>
     </div>
   );
