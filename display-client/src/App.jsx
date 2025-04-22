@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API = "https://tvuj-backend.onrender.com"; // <- ZDE ZMĚŇ na URL svého backendu
+const API = "park-master-user.vercel.app";
 
 export default function App() {
   const [reservations, setReservations] = useState([]);
